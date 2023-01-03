@@ -1,1 +1,1 @@
-# cw_bidding_platform
+Bidding Platform made for Cosmwasm Academy
