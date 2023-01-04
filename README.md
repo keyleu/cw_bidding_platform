@@ -1,1 +1,1 @@
-Bidding Platform made for Cosmwasm Academy
+Bidding Platform
