@@ -96,7 +96,7 @@ fn successful_first_bid() {
         router
             .bank
             .init_balance(storage, &sender, coins(100000, "atom"))
-            .unwrap();
+            .unwrap(); 
     });
 
     let code_id = BiddingContract::store_code(&mut app);
