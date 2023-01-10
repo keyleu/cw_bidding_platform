@@ -62,7 +62,7 @@ fn highestbid_with_nobids() {
     assert_eq!(
         resp,
         HighestBidResp {
-            highestbid: coin(0, "atom"),
+            highestbid: coin(0, "uatom"),
             highestbidder: None,
         }
     );
@@ -75,7 +75,7 @@ fn bid_failed_nofunds() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender, coins(100000, "atom"))
+            .init_balance(storage, &sender, coins(100000, "uuatom"))
             .unwrap();
     });
 
@@ -95,7 +95,7 @@ fn successful_first_bid() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender, coins(100000, "atom"))
+            .init_balance(storage, &sender, coins(100000, "uatom"))
             .unwrap(); 
     });
 
@@ -106,14 +106,14 @@ fn successful_first_bid() {
             .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     let resp = contract.query_highestbid(&app).unwrap();
 
     assert_eq!(
         resp,
         HighestBidResp {
-            highestbid: coin(950, "atom"),
+            highestbid: coin(950, "uatom"),
             highestbidder: Some(sender),
         }
     );
@@ -126,11 +126,11 @@ fn second_bid_fails() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -140,10 +140,10 @@ fn second_bid_fails() {
             .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     let err = contract
-        .bid(&mut app, &sender2, &coins(500, "atom"))
+        .bid(&mut app, &sender2, &coins(500, "uatom"))
         .unwrap_err();
 
     assert_eq!(err, ContractError::Biddingfail {},);
@@ -156,11 +156,11 @@ fn second_bid_succeeds() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -170,17 +170,17 @@ fn second_bid_succeeds() {
             .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(1200, "atom"))
+        .bid(&mut app, &sender2, &coins(1200, "uatom"))
         .unwrap();
     let resp = contract.query_highestbid(&app).unwrap();
 
     assert_eq!(
         resp,
         HighestBidResp {
-            highestbid: coin(1140, "atom"),
+            highestbid: coin(1140, "uatom"),
             highestbidder: Some(sender2),
         }
     );
@@ -193,11 +193,11 @@ fn bidding_accumulates() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -207,20 +207,20 @@ fn bidding_accumulates() {
             .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(1200, "atom"))
+        .bid(&mut app, &sender2, &coins(1200, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
     let resp = contract.query_highestbid(&app).unwrap();
 
     assert_eq!(
         resp,
         HighestBidResp {
-            highestbid: coin(2850, "atom"),
+            highestbid: coin(2850, "uatom"),
             highestbidder: Some(sender),
         }
     );
@@ -234,11 +234,11 @@ fn commission_is_received() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -253,18 +253,18 @@ fn commission_is_received() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(1200, "atom"))
+        .bid(&mut app, &sender2, &coins(1200, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     assert_eq!(
         app.wrap().query_all_balances(receiver).unwrap(),
-        coins(210, "atom")
+        coins(210, "uatom")
     );
 }
 
@@ -276,11 +276,11 @@ fn closing_contract_successfully() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -295,20 +295,20 @@ fn closing_contract_successfully() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(1200, "atom"))
+        .bid(&mut app, &sender2, &coins(1200, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     contract.close(&mut app, &receiver.clone()).unwrap();
 
     assert_eq!(
         app.wrap().query_all_balances(receiver).unwrap(),
-        coins(3060, "atom")
+        coins(3060, "uatom")
     );
 }
 
@@ -320,11 +320,11 @@ fn closing_twice() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -339,13 +339,13 @@ fn closing_twice() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(1200, "atom"))
+        .bid(&mut app, &sender2, &coins(1200, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     contract.close(&mut app, &receiver.clone()).unwrap();
@@ -365,11 +365,11 @@ fn unauthorized_closing() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -384,13 +384,13 @@ fn unauthorized_closing() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(1200, "atom"))
+        .bid(&mut app, &sender2, &coins(1200, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     let err = contract.close(&mut app, &sender).unwrap_err();
@@ -429,11 +429,11 @@ fn retract_funds() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(2000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(2000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -448,20 +448,20 @@ fn retract_funds() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(2000, "atom"))
+        .bid(&mut app, &sender2, &coins(2000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     contract.close(&mut app, &receiver.clone()).unwrap();
     contract.retract(&mut app, &sender2).unwrap();
     assert_eq!(
         app.wrap().query_all_balances(sender2).unwrap(),
-        coins(1900, "atom")
+        coins(1900, "uatom")
     );
 }
 
@@ -474,11 +474,11 @@ fn retract_funds_to_receiver() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(2000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(2000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -493,13 +493,13 @@ fn retract_funds_to_receiver() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(2000, "atom"))
+        .bid(&mut app, &sender2, &coins(2000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     contract.close(&mut app, &receiver.clone()).unwrap();
@@ -508,7 +508,7 @@ fn retract_funds_to_receiver() {
     contract.retract_to(&mut app, &sender2, receiver2.clone()).unwrap();
     assert_eq!(
         app.wrap().query_all_balances(receiver2).unwrap(),
-        coins(1900, "atom")
+        coins(1900, "uatom")
     );
 }
 
@@ -521,11 +521,11 @@ fn retract_with_no_funds() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -540,13 +540,13 @@ fn retract_with_no_funds() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(2000, "atom"))
+        .bid(&mut app, &sender2, &coins(2000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     contract.close(&mut app, &receiver.clone()).unwrap();
@@ -567,11 +567,11 @@ fn retract_not_closed() {
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
-            .init_balance(storage, &sender.clone(), coins(100000, "atom"))
+            .init_balance(storage, &sender.clone(), coins(100000, "uatom"))
             .unwrap();
     });
 
-    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "atom"))
+    app.send_tokens(sender.clone(), sender2.clone(), &coins(50000, "uatom"))
         .unwrap();
 
     let code_id = BiddingContract::store_code(&mut app);
@@ -586,13 +586,13 @@ fn retract_not_closed() {
     .unwrap();
 
     contract
-        .bid(&mut app, &sender, &coins(1000, "atom"))
+        .bid(&mut app, &sender, &coins(1000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender2, &coins(2000, "atom"))
+        .bid(&mut app, &sender2, &coins(2000, "uatom"))
         .unwrap();
     contract
-        .bid(&mut app, &sender, &coins(2000, "atom"))
+        .bid(&mut app, &sender, &coins(2000, "uatom"))
         .unwrap();
 
     let err = contract.retract(&mut app, &sender).unwrap_err();
