@@ -11,7 +11,7 @@ pub fn instantiate(deps: DepsMut, owner: Option<Addr>, sender: Addr) -> StdResul
 
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
     
-    HIGHEST_BID.save(deps.storage, &coin(0, "atom"))?;
+    HIGHEST_BID.save(deps.storage, &coin(0, "uatom"))?;
     HIGHEST_BIDDER.save(deps.storage, &None)?;
     CLOSED.save(deps.storage, &false)?;
     WINNER.save(deps.storage, &None)?;
@@ -85,14 +85,14 @@ pub mod exec {
             return Err(ContractError::ContractClosed);
         }
 
-        if info.funds.iter().find(|coin| coin.denom == "atom") == None {
+        if info.funds.iter().find(|coin| coin.denom == "uatom") == None {
             return Err(ContractError::BiddingEmpty {});
         }
 
         let new_bid = info
             .funds
             .iter()
-            .find(|coin| coin.denom == "atom")
+            .find(|coin| coin.denom == "uatom")
             .unwrap()
             .amount
             .u128();
@@ -101,14 +101,14 @@ pub mod exec {
 
         let bank_msg = BankMsg::Send {
             to_address: owner.to_string(),
-            amount: coins(new_bid * commission / 100, "atom"),
+            amount: coins(new_bid * commission / 100, "uatom"),
         };
 
-        let bid_without_commission = coin(new_bid - new_bid * commission / 100, "atom");
+        let bid_without_commission = coin(new_bid - new_bid * commission / 100, "uatom");
 
         let mut current_bid = TOTAL_BIDS.may_load(deps.storage, info.clone().sender)?;
         if current_bid == None {
-            current_bid = Some(coin(0, "atom"));
+            current_bid = Some(coin(0, "uatom"));
         }
 
         let highest_bid = HIGHEST_BID.load(deps.storage)?;
@@ -124,10 +124,10 @@ pub mod exec {
             .add_attribute("sender", info.sender.as_str())
             .add_attribute("new_highest_bid", new_highest_bid.to_string());
 
-        HIGHEST_BID.save(deps.storage, &coin(new_highest_bid.into(), "atom"))?;
+        HIGHEST_BID.save(deps.storage, &coin(new_highest_bid.into(), "uatom"))?;
         HIGHEST_BIDDER.save(deps.storage, &Some(info.clone().sender))?;
         TOTAL_BIDS.update(deps.storage, info.clone().sender, |_| -> StdResult<_> {
-            Ok(coin(new_highest_bid.into(), "atom"))
+            Ok(coin(new_highest_bid.into(), "uatom"))
         })?;
 
         Ok(resp)
